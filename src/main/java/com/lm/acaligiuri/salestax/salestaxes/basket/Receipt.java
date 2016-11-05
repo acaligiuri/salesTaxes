@@ -18,8 +18,8 @@ public class Receipt {
         return null;
     }
 
-    public void newLine(String title, BigDecimal price) {
-        receiptLines.add(new ReceiptLine(title, price));
+    public void newLine(String title, BigDecimal price, BigDecimal vat) {
+        receiptLines.add(new ReceiptLine(title, price, vat));
     }
 
     public void setTotalTax(BigDecimal totalTax) {
@@ -42,13 +42,28 @@ public class Receipt {
         return receiptLines;
     }
 
-    public class ReceiptLine {
-        public String title;
-        public BigDecimal price;
+    public static class ReceiptLine {
+        private String title;
+        private BigDecimal totalPrice;
+        private BigDecimal vat;
 
-        public ReceiptLine(String title, BigDecimal price) {
+        private ReceiptLine(String title, BigDecimal totalPrice, BigDecimal vat) {
             this.title = title;
-            this.price = price;
+            this.totalPrice = totalPrice;
+            this.vat = vat;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+
+        public BigDecimal getTotalPrice() {
+            return totalPrice;
+        }
+
+        public BigDecimal getVat() {
+            return vat;
         }
     }
 }

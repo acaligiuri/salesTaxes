@@ -8,21 +8,29 @@ import java.math.BigDecimal;
  * Created by andreacaligiuri on 05/11/16.
  */
 public class DefaultBasketPricer implements BasketPricer {
+    private static final BigDecimal POINT5 = new BigDecimal("0.05");
     public Receipt price(Basket basket) {
         Receipt receipt = new Receipt();
-        BigDecimal totalPrice = BigDecimal.ZERO;
-        BigDecimal totalVat = BigDecimal.ZERO;
         for (Product product :basket.getProducts()) {
-            //TODO
+            price(receipt, product);
         }
-        receipt.setTotalPrice(totalPrice);
-        receipt.setTotalTax(totalVat);
         return receipt;
     }
 
 
-    public Receipt.ReceiptLine price(Product product) {
-        //TODO
-        return null;
+    public void price(Receipt receipt, Product product) {
+        BigDecimal productVat = product.getShelfPrice().multiply(product.getSalesTax());
+        productVat = productVat.divide(POINT5, 0, BigDecimal.ROUND_UP).multiply(POINT5);
+        BigDecimal takeHomePrice = productVat.add(product.getShelfPrice());
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("1 ");
+        if (product.isImported()) {
+            builder.append("imported ");
+        }
+        receipt.setTotalTax(receipt.getTotalTax().add(productVat));
+        receipt.setTotalPrice(receipt.getTotalPrice().add(takeHomePrice));
+        builder.append(product.getName());
+        receipt.newLine(builder.toString(), takeHomePrice, productVat);
     }
 }

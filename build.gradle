@@ -9,7 +9,7 @@ buildscript {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
 	}
 }
-version = "0.1.0"
+version = "0.1.1"
 
 apply plugin: 'java'
 apply plugin: 'spring-boot'
