@@ -141,4 +141,81 @@ public class DefaultBasketPricerTest {
         assertTrue(new BigDecimal("6.70").compareTo(receipt.getTotalTax()) == 0);
         assertTrue(new BigDecimal("74.68").compareTo(receipt.getTotalPrice()) == 0);
     }
+
+    /*******************************************************************************************************************
+     *  EXTRA TEST CASES
+     ******************************************************************************************************************/
+    @Test
+    public void testTwoTaxFreeProducts() {
+        Basket basket = new Basket();
+        basket.addProduct(Product.builder().title("book").price(new BigDecimal("12.49")).build());
+        basket.addProduct(Product.builder().title("book").price(new BigDecimal("12.49")).build());
+
+        Receipt receipt = unit.price(basket);
+        assertNotNull(receipt);
+        List<Receipt.ReceiptLine> receiptLineList = receipt.getReceiptLines();
+        assertNotNull(receiptLineList);
+        assertEquals(1, receiptLineList.size());
+
+        assertEquals("2 book", receiptLineList.get(0).getTitle());
+        assertTrue(new BigDecimal("24.98").compareTo(receipt.getReceiptLines().get(0).getTotalPrice())== 0);
+
+        assertTrue(new BigDecimal("0.00").compareTo(receipt.getTotalTax()) == 0);
+        assertTrue(new BigDecimal("24.98").compareTo(receipt.getTotalPrice()) == 0);
+    }
+    @Test
+    public void testTwoImportedTaxFreeProducts() {
+        Basket basket = new Basket();
+        basket.addProduct(Product.builder().title("book").price(new BigDecimal("12.49")).imported().build());
+        basket.addProduct(Product.builder().title("book").price(new BigDecimal("12.49")).imported().build());
+
+        Receipt receipt = unit.price(basket);
+        assertNotNull(receipt);
+        List<Receipt.ReceiptLine> receiptLineList = receipt.getReceiptLines();
+        assertNotNull(receiptLineList);
+        assertEquals(1, receiptLineList.size());
+
+        assertEquals("2 imported book", receiptLineList.get(0).getTitle());
+        assertTrue(new BigDecimal("26.23").compareTo(receipt.getReceiptLines().get(0).getTotalPrice())== 0);
+
+        assertTrue(new BigDecimal("1.25").compareTo(receipt.getTotalTax()) == 0);
+        assertTrue(new BigDecimal("26.23").compareTo(receipt.getTotalPrice()) == 0);
+    }
+    @Test
+    public void testTwoSalesTaxedProducts() {
+        Basket basket = new Basket();
+        basket.addProduct(Product.builder().title("bottle of perfume").price(new BigDecimal("27.99")).salesTax().build());
+        basket.addProduct(Product.builder().title("bottle of perfume").price(new BigDecimal("27.99")).salesTax().build());
+
+        Receipt receipt = unit.price(basket);
+        assertNotNull(receipt);
+        List<Receipt.ReceiptLine> receiptLineList = receipt.getReceiptLines();
+        assertNotNull(receiptLineList);
+        assertEquals(1, receiptLineList.size());
+
+        assertEquals("2 bottle of perfume", receiptLineList.get(0).getTitle());
+        assertTrue(new BigDecimal("61.58").compareTo(receipt.getReceiptLines().get(0).getTotalPrice())== 0);
+
+        assertTrue(new BigDecimal("5.60").compareTo(receipt.getTotalTax()) == 0);
+        assertTrue(new BigDecimal("61.58").compareTo(receipt.getTotalPrice()) == 0);
+    }
+
+    @Test
+    public void testTwoImportedSalesTaxedProducts() {
+        Basket basket = new Basket();
+        basket.addProduct(Product.builder().title("bottle of perfume").price(new BigDecimal("27.99")).salesTax().imported().build());
+        basket.addProduct(Product.builder().title("bottle of perfume").price(new BigDecimal("27.99")).salesTax().imported().build());
+
+        Receipt receipt = unit.price(basket);
+        assertNotNull(receipt);
+        List<Receipt.ReceiptLine> receiptLineList = receipt.getReceiptLines();
+        assertNotNull(receiptLineList);
+        assertEquals(1, receiptLineList.size());
+
+        assertEquals("2 imported bottle of perfume", receiptLineList.get(0).getTitle());
+        assertTrue(new BigDecimal("64.38").compareTo(receipt.getReceiptLines().get(0).getTotalPrice())== 0);
+
+        assertTrue(new BigDecimal("8.40").compareTo(receipt.getTotalTax()) == 0);
+        assertTrue(new BigDecimal("64.38").compareTo(receipt.getTotalPrice()) == 0);
+    }
 }
